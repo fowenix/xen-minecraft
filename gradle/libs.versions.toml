@@ -1,0 +1,32 @@
+[libraries]
+commons-codec = "commons-codec:commons-codec:1.9"
+commons-io = "commons-io:commons-io:2.4"
+commons-lang3 = "org.apache.commons:commons-lang3:3.3.2"
+gson = "com.google.code.gson:gson:2.2.4"
+guava = "com.google.guava:guava:17.0"
+ibm-icu = "com.ibm.icu:icu4j-core-mojang:51.2"
+jopt-simple = "net.sf.jopt-simple:jopt-simple:4.5"
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+lwjgl = { module = "org.lwjgl.lwjgl:lwjgl", version.ref = "lwjgl" }
+lwjgl-util = { module = "org.lwjgl.lwjgl:lwjgl_util", version.ref = "lwjgl" }
+lwjgl-platform = { module = "org.lwjgl.lwjgl:lwjgl-platform", version.ref = "lwjgl" }
+mojang-authlib = "com.mojang:authlib:1.5.21"
+mojang-netty = "com.mojang:netty:1.8.8"
+netty = "io.netty:netty-all:4.0.10.Final"
+paulscode-codecjorbis = "com.paulscode:codecjorbis:20101023"
+paulscode-librarylwjglopenal = "com.paulscode:librarylwjglopenal:20100824"
+paulscode-soundsystem = "com.paulscode:soundsystem:20120107"
+trove4j = "net.sf.trove4j:trove4j:3.0.3"
+
+[bundles]
+client = ["ibm-icu", "jopt-simple", "lwjgl", "lwjgl-util", "paulscode-codecjorbis", "paulscode-librarylwjglopenal", "paulscode-soundsystem"]
+common = ["commons-codec", "commons-io", "commons-lang3", "gson", "guava", "log4j-api", "log4j-core", "mojang-authlib", "mojang-netty", "netty", "trove4j"]
+embed = []
+native = ["lwjgl-platform"]
+server = []
+
+[versions]
+kotlin = "2.2.20"
+log4j = "2.0-beta9"
+lwjgl = "2.9.4-nightly-20150209"
