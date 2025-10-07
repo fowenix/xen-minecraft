@@ -1,14 +1,8 @@
 plugins {
     kotlin("jvm") version libs.versions.kotlin
-    id("xen")
 }
 
 group = "au.fowenix.xen"
-version = "1.0-SNAPSHOT"
-
-dependencies {
-    implementation("au.fowenix.xen:xen-common")
-}
 
 repositories {
     mavenCentral()
