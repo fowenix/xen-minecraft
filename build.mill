@@ -9,6 +9,11 @@ object `package` extends Module {
   object files extends RootModule {
     val root = os.home / ".cache/xen"
 
+    object assets extends AssetsModule {
+      val index = files.index
+      val root = files.root / "assets"
+    }
+
     object client extends DownloadModule {
       def directory = root / "jars" / hash
 
