@@ -5,7 +5,6 @@ import mill._, mill.scalalib._, mill.api.JsonFormatters._
 import os.{Path, SubPath}
 import scala.concurrent._, scala.util.Using
 import upickle.implicits.namedTuples.default.given
-import os.PathChunk
 
 trait AssetsModule extends RootModule {
   val index: DownloadModule
