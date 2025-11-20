@@ -2,6 +2,35 @@
 
 package build
 
+import au.fowenix.xen.mill._
 import mill._, mill.scalalib._
 
-object `package` extends Module
+object `package` extends Module {
+  object files extends RootModule {
+    val root = os.home / ".cache/xen"
+
+    object client extends DownloadModule {
+      def directory = root / "jars" / hash
+
+      val hash = "e80d9b3bf5085002218d4be59e668bac718abbc6"
+      val path = "client.jar"
+      val url = "https://launcher.mojang.com/v1/objects/e80d9b3bf5085002218d4be59e668bac718abbc6/client.jar"
+    }
+
+    object index extends DownloadModule {
+      def directory = root / "assets" / "indexes"
+
+      val hash = "1863782e33ce7b584fc45b037325a1964e095d3e"
+      val path = "1.7.10.json"
+      val url = "https://launchermeta.mojang.com/v1/packages/1863782e33ce7b584fc45b037325a1964e095d3e/1.7.10.json"
+    }
+
+    object server extends DownloadModule {
+      def directory = root / "jars" / hash
+
+      val hash = "952438ac4e01b4d115c5fc38f891710c4941df29"
+      val path = "server.jar"
+      val url = "https://launcher.mojang.com/v1/objects/952438ac4e01b4d115c5fc38f891710c4941df29/server.jar"
+    }
+  }
+}
