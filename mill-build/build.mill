@@ -1,0 +1,5 @@
+package build
+
+import mill._, mill.meta.MillBuildRootModule, mill.scalalib._
+
+object `package` extends MillBuildRootModule
