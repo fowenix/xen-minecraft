@@ -4,8 +4,9 @@
 package build
 
 import au.fowenix.xen.mill._
-import java.util.UUID
+import java.io._, java.util.jar._, java.util.UUID
 import mill._, mill.api.BuildCtx, mill.scalalib._
+import scala.util.Using
 
 object `package` extends Module {
   def jvmArgs = Task.Input {
@@ -19,6 +20,12 @@ object `package` extends Module {
 
   object files extends RootModule {
     val root = os.home / ".cache/xen"
+
+    def libraries = Seq(
+      mvn"com.mojang:authlib:1.5.21",
+      mvn"com.mojang:netty:1.8.8",
+      mvn"net.sf.trove4j:trove4j:3.0.3"
+    )
 
     object assets extends AssetsModule {
       val index = files.index
@@ -47,6 +54,29 @@ object `package` extends Module {
       val hash = "952438ac4e01b4d115c5fc38f891710c4941df29"
       val path = "server.jar"
       val url = "https://launcher.mojang.com/v1/objects/952438ac4e01b4d115c5fc38f891710c4941df29/server.jar"
+
+      def trimmed = Task {
+        val dest = Task.dest / "out.jar"
+
+        Using.Manager { use =>
+          val fis = FileInputStream(resolved().path.toIO)
+          val jis = use(JarInputStream(fis))
+
+          val fos = FileOutputStream(dest.toIO)
+          val jos = use(JarOutputStream(fos))
+
+          LazyList.continually { jis.getNextEntry() }.takeWhile(_ != null).foreach { entry =>
+            val name = entry.getName()
+
+            if (!name.contains("/") || name.startsWith("assets/") || name.startsWith("net/minecraft/")) {
+              jos.putNextEntry(entry)
+              jos.write(jis.readAllBytes())
+            }
+          }
+        }
+
+        PathRef(dest)
+      }
     }
   }
 
@@ -60,7 +90,7 @@ object `package` extends Module {
 
       def mainClass = Some("net.minecraft.client.main.Main")
 
-      def mvnDeps = super.mvnDeps() ++ Seq(
+      def mvnDeps = super.mvnDeps() ++ files.libraries ++ Seq(
         mvn"com.ibm.icu:icu4j-core-mojang:51.2",
         mvn"com.mojang:authlib:1.5.21",
         mvn"com.mojang:netty:1.8.8",
@@ -101,11 +131,13 @@ object `package` extends Module {
 
       def mainClass = Some("net.minecraft.server.MinecraftServer")
 
+      def mvnDeps = super.mvnDeps() ++ files.libraries
+
       def runArgs = "--nogui"
 
       def runDefault() = run(Task.Anon(Args(runArgs)))
 
-      def unmanagedClasspath = super.unmanagedClasspath() :+ files.server.resolved()
+      def unmanagedClasspath = super.unmanagedClasspath() :+ files.server.trimmed()
     }
   }
 
