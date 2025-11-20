@@ -1,3 +1,4 @@
+//| mill-jvm-opts: ["--enable-native-access=ALL-UNNAMED", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCompactObjectHeaders", "-XX:+UseStringDeduplication", "-XX:+UseZGC"]
 //| mill-jvm-version: system
 
 package build
@@ -7,6 +8,15 @@ import java.util.UUID
 import mill._, mill.api.BuildCtx, mill.scalalib._
 
 object `package` extends Module {
+  def jvmArgs = Task.Input {
+    BuildCtx.withFilesystemCheckerDisabled {
+      val path = BuildCtx.workspaceRoot / "build.mill"
+      val line = os.read.lines.stream(path).head
+
+      line.slice(20, line.length - 1).split(", ").map { line => line.slice(1, line.length - 1) }.toSeq
+    }
+  }
+
   object files extends RootModule {
     val root = os.home / ".cache/xen"
 
@@ -100,7 +110,7 @@ object `package` extends Module {
   }
 
   trait CommonModule extends JavaModule {
-    // def forkArgs = jvmArgs
+    def forkArgs = jvmArgs
 
     def repositories = Seq("https://libraries.minecraft.net/")
   }
